@@ -1,87 +1,91 @@
 import os
+import json
 import random
 import requests
 from collections import defaultdict
 from dotenv import load_dotenv
+from typing import Iterator, Tuple
 
 load_dotenv()
 
 
-def get_shortest_distance(
-    api_key, origin, destination, country="poland", mode="driving"
-) -> int:
-    url = "https://maps.googleapis.com/maps/api/directions/json"
-    if country:
-        origin += ", " + country
-        destination += ", " + country
+class DistanceFinder:
+    def __init__(
+        self, cities_path: str, api_key: str, country: str = None, mode: str = "driving"
+    ):
+        """
+        Args:
+            - `cities_path`: path to a txt file with cities in format: city: city1,city2\ncity2: city1,...
+            - `api_key`: Google Maps API key
+        """
 
-    params = {
-        "origin": origin,
-        "destination": destination,
-        "key": api_key,
-        "mode": mode,
-    }
+        self._url = "https://maps.googleapis.com/maps/api/directions/json"
 
-    response = requests.get(url, params=params)
-    if response.status_code == 200:
-        directions = response.json()
-        if directions["status"] == "OK":
-            route = directions["routes"][0]
-            leg = route["legs"][0]
-            return leg["distance"]["value"] / 1000.0
+        self.api_key = api_key
+        self.cities_path = cities_path
+        self.country = country
+        self.mode = mode
+
+        self.distances = defaultdict(dict)
+        self._cache = {}
+
+    def _get_shortest_distance(self, origin, destination) -> int:
+        if self.country:
+            origin += ", " + self.country
+            destination += ", " + self.country
+
+        params = {
+            "origin": origin,
+            "destination": destination,
+            "key": self.api_key,
+            "mode": self.mode,
+        }
+
+        response = requests.get(self._url, params=params)
+        if response.status_code == 200:
+            directions = response.json()
+            if directions["status"] == "OK":
+                route = directions["routes"][0]
+                leg = route["legs"][0]
+                return round(leg["distance"]["value"] / 1000.0)
+            else:
+                return None
         else:
             return None
-    else:
-        return None
+
+    def _get_cities(self) -> Iterator[Tuple[str, str]]:
+        """Get cities from file"""
+
+        with open(self.cities_path, "r") as f:
+            for row in f.readlines():
+                if not row:
+                    continue
+
+                city, connections = row.split(":")
+                city = city.strip()
+                for c in connections.split(","):
+                    c = c.strip()
+                    yield city, c
+
+    def find(self, save_file=None) -> None:
+        """Find shortest distances between cities"""
+
+        for city, conn in self._get_cities():
+            if f"{conn}-{city}" in self._cache:
+                self.distances[city][conn] = self._cache[f"{conn}-{city}"]
+
+            self.distances[city][conn] = self._cache[f"{conn}-{city}"] = (
+                self._get_shortest_distance(city, conn)
+            )
+
+        if save_file:
+            with open(save_file, "w") as f:
+                json.dump(self.distances, f, indent=4)
 
 
-DISTANCES = defaultdict(dict)
-CACHE = {}
-CITIES = """
-szczecin: zielona-gora,gdansk,torun,poznan
-gdansk: szczecin, torun, olsztyn
-olsztyn: gdansk, torun, bialystok, warszawa
-bialystok:olsztyn,warszawa
-zielona-gora: szczecin, poznan, wroclaw
-poznan: zielona-gora,szczecin,torun,lodz,opole
-torun:szczecin,gdansk,olsztyn,warszawa,lodz,poznan
-warszawa: lodz, torun, olsztyn, bialystok, lublin, kielce
-lublin: warszawa,kielce,rzeszow
-wroclaw:zielona-gora,poznan,lodz,opole
-opole: wroclas,poznan,lodz,katowice
-lodz:poznan,torun,warszawa,kielce,katowice,opole,wroclaw
-katowice:opole,lodz,kielce,krakow
-kielce:lodz,warszawa,lublin,rzeszow,krakow,katowice
-krakow:katowice,kielce,rzeszow
-rzeszow:krakow,kielce,lublin
-"""
-
-
-def get_cities():
-    for row in CITIES.split("\n"):
-        if not row:
-            continue
-
-        city, connections = row.split(":")
-        city = city.strip()
-        for c in connections.split(","):
-            c = c.strip()
-            yield city, c
-
-
-# Example usage
 if __name__ == "__main__":
     api_key = os.getenv("API_KEY")
-    origin = "zielona-gora"
-    destination = "poznan"
+    cities_path = os.path.join(os.getcwd(), "cities.txt")
 
-    for city, c in get_cities():
-        if f"{c}-{city}" in CACHE:
-            DISTANCES[city][c] = CACHE[f"{c}-{city}"]
-
-        DISTANCES[city][c] = CACHE[f"{c}-{city}"] = get_shortest_distance(
-            api_key, city, c, country="poland"
-        )
-        break
-
-    print(dict(DISTANCES))
+    finder = DistanceFinder(cities_path=cities_path, api_key=api_key)
+    finder.find(save_file="distances.json")

@@ -1,0 +1,101 @@
+{
+    "szczecin": {
+        "zielona-gora": 213,
+        "gdansk": 369,
+        "torun": 313,
+        "poznan": 265
+    },
+    "gdansk": {
+        "szczecin": 368,
+        "torun": 170,
+        "olsztyn": 182
+    },
+    "olsztyn": {
+        "gdansk": 166,
+        "torun": 170,
+        "bialystok": 229,
+        "warszawa": 217
+    },
+    "bialystok": {
+        "olsztyn": 225,
+        "warszawa": 198
+    },
+    "zielona-gora": {
+        "szczecin": 213,
+        "poznan": 153,
+        "wroclaw": 187
+    },
+    "poznan": {
+        "zielona-gora": 153,
+        "szczecin": 266,
+        "torun": 186,
+        "lodz": 214,
+        "opole": 285
+    },
+    "torun": {
+        "szczecin": 314,
+        "gdansk": 167,
+        "olsztyn": 170,
+        "warszawa": 262,
+        "lodz": 181,
+        "poznan": 188
+    },
+    "warszawa": {
+        "lodz": 136,
+        "torun": 259,
+        "olsztyn": 214,
+        "bialystok": 198,
+        "lublin": 173,
+        "kielce": 179
+    },
+    "lublin": {
+        "warszawa": 172,
+        "kielce": 195,
+        "rzeszow": 178
+    },
+    "wroclaw": {
+        "zielona-gora": 187,
+        "poznan": 186,
+        "lodz": 225,
+        "opole": 97
+    },
+    "opole": {
+        "wroclas": 99,
+        "poznan": 284,
+        "lodz": 203,
+        "katowice": 113
+    },
+    "lodz": {
+        "poznan": 215,
+        "torun": 180,
+        "warszawa": 130,
+        "kielce": 154,
+        "katowice": 203,
+        "opole": 205,
+        "wroclaw": 218
+    },
+    "katowice": {
+        "opole": 117,
+        "lodz": 203,
+        "kielce": 164,
+        "krakow": 81
+    },
+    "kielce": {
+        "lodz": 154,
+        "warszawa": 181,
+        "lublin": 196,
+        "rzeszow": 167,
+        "krakow": 115,
+        "katowice": 164
+    },
+    "krakow": {
+        "katowice": 83,
+        "kielce": 115,
+        "rzeszow": 166
+    },
+    "rzeszow": {
+        "krakow": 166,
+        "kielce": 157,
+        "lublin": 177
+    }
+}
