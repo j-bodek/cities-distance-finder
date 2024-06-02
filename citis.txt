@@ -1,0 +1,16 @@
+szczecin: zielona-gora,gdansk,torun,poznan
+gdansk: szczecin, torun, olsztyn
+olsztyn: gdansk, torun, bialystok, warszawa
+bialystok:olsztyn,warszawa
+zielona-gora: szczecin, poznan, wroclaw
+poznan: zielona-gora,szczecin,torun,lodz,opole
+torun:szczecin,gdansk,olsztyn,warszawa,lodz,poznan
+warszawa: lodz, torun, olsztyn, bialystok, lublin, kielce
+lublin: warszawa,kielce,rzeszow
+wroclaw:zielona-gora,poznan,lodz,opole
+opole: wroclas,poznan,lodz,katowice
+lodz:poznan,torun,warszawa,kielce,katowice,opole,wroclaw
+katowice:opole,lodz,kielce,krakow
+kielce:lodz,warszawa,lublin,rzeszow,krakow,katowice
+krakow:katowice,kielce,rzeszow
+rzeszow:krakow,kielce,lublin
