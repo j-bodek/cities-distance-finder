@@ -8,7 +8,7 @@ torun:szczecin,gdansk,olsztyn,warszawa,lodz,poznan
 warszawa: lodz, torun, olsztyn, bialystok, lublin, kielce
 lublin: warszawa,kielce,rzeszow
 wroclaw:zielona-gora,poznan,lodz,opole
-opole: wroclas,poznan,lodz,katowice
+opole: wroclaw,poznan,lodz,katowice
 lodz:poznan,torun,warszawa,kielce,katowice,opole,wroclaw
 katowice:opole,lodz,kielce,krakow
 kielce:lodz,warszawa,lublin,rzeszow,krakow,katowice
