@@ -1,6 +1,5 @@
 import os
 import json
-import random
 import requests
 from collections import defaultdict
 from dotenv import load_dotenv
